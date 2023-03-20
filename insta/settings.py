@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'content.apps.ContentConfig',
     'location.apps.LocationConfig',
     'relation.apps.RelationConfig',
-    'user.apps.UserConfig',
+    'user.apps.UserConfig',    
 
 ]
 
