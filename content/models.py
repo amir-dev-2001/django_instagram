@@ -1,3 +1,71 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from lib.common_models import BaseModel
+from django.contrib.auth import get_user_model 
+from location.models import Location
 
-# Create your models here.
+User = get_user_model()
+
+class Post(BaseModel):
+    caption = models.TextField(_('caption'), blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    locations = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='posts')
+
+    def __str__(self):
+        return "{} ({})".format(self.user.username, self.id)
+    
+    class Meta:
+        verbose_name = _('post')
+        verbose_name_plural = _('posts')
+
+class PostMedia(BaseModel):
+    IMAGE = 1
+    VIDEO = 2
+
+    TYPE_CHOICES = (
+        (IMAGE, _('Image')),
+        (VIDEO, _('Video')),
+    )
+
+    media_type = models.PositiveSmallIntegerField(_('media type'), choices=TYPE_CHOICES, default=IMAGE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='media')
+    media_file = models.FileField(_('media file'), upload_to='content/media')
+
+    def __str__(self):
+        return "{} - {}".format(str(self.post), self.get_media_type_display())
+
+    class Meta:
+        verbose_name = _('post media')
+        verbose_name_plural = _('post medias')
+
+class Tag(BaseModel):
+    title = models.CharField(_('title'), max_length=255)
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        verbose_name = _('tag')
+        verbose_name_plural = _('tags') 
+
+class PostTag(BaseModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='hashtags')
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='posts')
+
+    def __str__(self):
+        return "{} - {}".format(str(self.tag), str(self.post))
+
+    class Meta:
+        verbose_name = _('post tag')
+        verbose_name_plural = _('post tags')
+
+class TaggedUser(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tagged_users')
+    Post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='tagged_posts')
+
+    def __str__(self):
+        return "{} - {}".format(str(self.user), str(self.Post))
+    
+    class Meta:
+        verbose_name = _('tagged user')
+        verbose_name_plural = _('tagged users')
