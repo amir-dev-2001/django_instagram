@@ -10,9 +10,6 @@ class BaseModel(models.Model):
     modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 
 
-    class meta:
-        abstract = True
-
         
 
 
