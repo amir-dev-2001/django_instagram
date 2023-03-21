@@ -1,15 +1,17 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from lib.common_models import BaseModel
+from user.models import BaseModel
 from django.contrib.auth import get_user_model 
 from location.models import Location
 
 User = get_user_model()
 
-class Post(BaseModel):
+class Post(models.Model):
     caption = models.TextField(_('caption'), blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     locations = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='posts')
+    create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
+    modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 
     def __str__(self):
         return "{} ({})".format(self.user.username, self.id)
@@ -18,7 +20,7 @@ class Post(BaseModel):
         verbose_name = _('post')
         verbose_name_plural = _('posts')
 
-class PostMedia(BaseModel):
+class PostMedia(models.Model):
     IMAGE = 1
     VIDEO = 2
 
@@ -30,6 +32,8 @@ class PostMedia(BaseModel):
     media_type = models.PositiveSmallIntegerField(_('media type'), choices=TYPE_CHOICES, default=IMAGE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='media')
     media_file = models.FileField(_('media file'), upload_to='content/media')
+    create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
+    modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 
     def __str__(self):
         return "{} - {}".format(str(self.post), self.get_media_type_display())
@@ -38,8 +42,10 @@ class PostMedia(BaseModel):
         verbose_name = _('post media')
         verbose_name_plural = _('post medias')
 
-class Tag(BaseModel):
+class Tag(models.Model):
     title = models.CharField(_('title'), max_length=255)
+    create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
+    modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 
     def __str__(self):
         return self.title

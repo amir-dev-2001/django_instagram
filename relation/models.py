@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from lib.common_models import BaseModel
+from user.models import BaseModel
 from django.utils.translation import ugettext_lazy as _
 
 

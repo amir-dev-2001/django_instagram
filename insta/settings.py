@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'location.apps.LocationConfig',
     'relation.apps.RelationConfig',
     'user.apps.UserConfig',    
-
 ]
 
 MIDDLEWARE = [

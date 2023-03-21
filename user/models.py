@@ -1,13 +1,23 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
+class BaseModel(models.Model):
+    create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
+    modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
+
+
+    class meta:
+        abstract = True
+
+        
+
 
 # Create your models here.
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
