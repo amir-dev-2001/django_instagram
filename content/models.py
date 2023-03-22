@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from user.models import BaseModel
 from django.contrib.auth import get_user_model 
 from location.models import Location
+from django.core.validators import FileExtensionValidator
 
 User = get_user_model()
 
@@ -31,7 +32,10 @@ class PostMedia(models.Model):
 
     media_type = models.PositiveSmallIntegerField(_('media type'), choices=TYPE_CHOICES, default=IMAGE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='media')
-    media_file = models.FileField(_('media file'), upload_to='content/media')
+    media_file = models.FileField(
+        _('media file'), upload_to='content/media', 
+        validators=[FileExtensionValidator(allowed_extensions=('.mp4', '.png', '.jpg', '.jpeg', '.flv'))]
+    )
     create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
     modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 

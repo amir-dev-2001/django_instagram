@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>
+            login
+        </title>
+    </head>
+
+    <body>
+        <form action="{{form.actions}}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit">
+        </form>
+    </body>
+</html>
