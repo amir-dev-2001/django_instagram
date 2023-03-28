@@ -10,7 +10,7 @@ User = get_user_model()
 class Post(models.Model):
     caption = models.TextField(_('caption'), blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    locations = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='posts')
+    locations = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='posts', blank=True)
     create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
     modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 

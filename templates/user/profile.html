@@ -7,6 +7,19 @@
     <title>profile</title>
 </head>
 <body>
-    <h3>Hi dear {{request.user.username}}</h3>
+    <h3>username: {{object.username}}</h3>
+    <p>bio: {{object.bio}}</p>
+    <p>website: <a href="{{object.website}}">{{object.website}}</a></p>
+    <p>followers: {{followers_count}}</p>
+    <p>followings: {{followings_count}}</p>
+    <p>posts: {{posts_count}}</p>
+    
+    
+    <form action="{% url 'follow' object.username %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="{% if is_following %}Unfollow{% else %}Follow{% endif %}">
+    </form>
+    
+    
 </body>
 </html>

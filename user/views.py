@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, DetailView
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth import login, get_user_model
-
-
+from .models import User
+from relation.models import Relation
 user = get_user_model()
 
 class RegisterView(FormView):
@@ -38,10 +38,27 @@ class ProfileView(UpdateView):
     success_url = '/'
 
 
-
+ 
     def get_object(self, queryset=None):
         return self.request.user
 
+
+
+class ProfileDetailView(DetailView):
+    model = User
+    slug_url_kwarg = 'username'
+    slug_field = 'username'
+    template_name = 'user/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context['posts_count'] = user.posts.count()
+        context['followers_count'] = user.followers.count()
+        context['followings_count'] = user.followings.count()
+        context['is_following'] = Relation.objects.filter(from_user=self.request.user, to_user=user).exists()   
+        return context
+    
 def signup(request):
     return HttpResponse("you successfully signed up.")   
 
