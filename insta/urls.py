@@ -15,13 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+# from django.views.generic import TemplateView
 from user.views import ProfileDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('user.urls')),
     path('follow/', include('relation.urls')),
-    path('', TemplateView.as_view(template_name='user/profile_update.html')),
+    # path('', TemplateView.as_view(template_name='user/profile_update.html')),
     path('<str:username>/', ProfileDetailView.as_view(), name='profile')
 ]

@@ -6,6 +6,8 @@ from .forms import RegistrationForm, LoginForm
 from django.contrib.auth import login, get_user_model
 from .models import User
 from relation.models import Relation
+from django.core.cache import cache
+
 user = get_user_model()
 
 class RegisterView(FormView):
@@ -26,7 +28,7 @@ class LoginView(FormView):
         login(self.request, form.cleaned_data['user'])
         return super().form_valid(form)
 
-class ProfileView(UpdateView):
+class ProfileUpdateView(UpdateView):
     model = user
     fields = (
         'username',
@@ -43,6 +45,31 @@ class ProfileView(UpdateView):
         return self.request.user
 
 
+class ProfileView(DetailView):
+    model = User
+    slug_url_kwarg = 'username'
+    slug_field = 'username'
+    template_name = 'user/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        # context['posts_count'] = user.posts.count()
+        context['posts_count'] = cache.get_or_set(
+            '{}:posts_count'.format(user.username), user.posts.count()
+            )
+
+        # context['followers_count'] = user.followers.count()
+        context['followers_count'] = cache.get_or_set(
+            '{}:followers_count'.format(user.username), user.followers.count()
+            )
+
+        context['followings_count'] = user.followings.count()
+
+        context['is_following'] = Relation.objects.filter(from_user=self.request.user, to_user=user).exists()   
+        return context
+    
+
 
 class ProfileDetailView(DetailView):
     model = User
@@ -53,9 +80,18 @@ class ProfileDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
-        context['posts_count'] = user.posts.count()
-        context['followers_count'] = user.followers.count()
+        # context['posts_count'] = user.posts.count()
+        context['posts_count'] = cache.get_or_set(
+            '{}:posts_count'.format(user.username), user.posts.count()
+            )
+
+        # context['followers_count'] = user.followers.count()
+        context['followers_count'] = cache.get_or_set(
+            '{}:followers_count'.format(user.username), user.followers.count()
+            )
+
         context['followings_count'] = user.followings.count()
+
         context['is_following'] = Relation.objects.filter(from_user=self.request.user, to_user=user).exists()   
         return context
     

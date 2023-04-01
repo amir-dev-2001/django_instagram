@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model, authenticate
 from django.utils.translation import ugettext_lazy as _
 
+from user.tasks import send_verification_code
+
 User = get_user_model()
 
 class RegistrationForm(forms.Form):
@@ -19,6 +21,7 @@ class RegistrationForm(forms.Form):
     
     def save(self):
         user = User.objects.create_user(**self.cleaned_data)
+        send_verification_code.delay(user.username)
         return user
     
 
