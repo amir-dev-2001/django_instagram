@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import datetime
 from kombu import Queue, Exchange
 from pathlib import Path
 
@@ -37,11 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+
     'activity.apps.ActivityConfig',
     'content.apps.ContentConfig',
     'location.apps.LocationConfig',
     'relation.apps.RelationConfig',
-    'user.apps.UserConfig',    
+    'user.apps.UserConfig',   
+    'api.apps.ApiConfig', 
 ]
 
 MIDDLEWARE = [
@@ -53,6 +58,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': (
+        # 'rest_framework.permissions.IsAuthenticated',
+    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
 
 ROOT_URLCONF = 'insta.urls'
 
@@ -156,3 +174,9 @@ CELERY_QUEUES = (
     Queue('low', Exchange('low'), routing_key='low'),
 )
 CELERY_DEFAULT_QUEUE = 'low'
+
+
+# jwt configuration
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+}

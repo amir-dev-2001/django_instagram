@@ -33,6 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     bio = models.TextField(_("bio"), blank=True)
     website = models.URLField(_("website"), blank=True)
     is_verified = models.BooleanField(_('is verified'),default=False)
+    is_private = models.BooleanField(_('is private'), default=False)
 
     is_staff = models.BooleanField(
         _('staff status'),

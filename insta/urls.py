@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from rest_framework_jwt.views import obtain_jwt_token
 from django.contrib import admin
 from django.urls import path, include
 # from django.views.generic import TemplateView
@@ -20,6 +22,8 @@ from user.views import ProfileDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-token-auth/', obtain_jwt_token),
+    path('api/', include('api.urls')),
     path('', include('user.urls')),
     path('follow/', include('relation.urls')),
     # path('', TemplateView.as_view(template_name='user/profile_update.html')),

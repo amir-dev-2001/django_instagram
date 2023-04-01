@@ -10,7 +10,7 @@ class Comment(models.Model):
     caption = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    reply_to = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies')
+    reply_to = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', blank=True, null=True)
     create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
     modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 

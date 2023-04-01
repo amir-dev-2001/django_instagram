@@ -10,7 +10,7 @@ User = get_user_model()
 class Post(models.Model):
     caption = models.TextField(_('caption'), blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    locations = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='posts', blank=True)
+    locations = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='posts', null=True,blank=True)
     create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
     modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
 
@@ -34,7 +34,7 @@ class PostMedia(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='media')
     media_file = models.FileField(
         _('media file'), upload_to='content/media', 
-        validators=[FileExtensionValidator(allowed_extensions=('.mp4', '.png', '.jpg', '.jpeg', '.flv'))]
+        validators=[FileExtensionValidator(allowed_extensions=('mp4', 'png', 'jpg', 'jpeg', 'flv'))]
     )
     create_time = models.DateTimeField(_("created time") ,auto_now_add=True)
     modified_time = models.DateTimeField(_("modified time") ,auto_now=True)
