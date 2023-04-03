@@ -79,4 +79,9 @@ class CommentSerializer(serializers.ModelSerializer):
                 from_user=request.user, to_user=attrs['post'].user).exists():
                 raise ValidationError(_('You can not comment on this post. This account is private and you are not following it yet.'))
         return attrs    
-                    
+
+class UsersAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+

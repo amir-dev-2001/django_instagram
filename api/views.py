@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication 
-from .serializers import UserSerializer, RelationSerializer, PostListSerializer, CommentSerializer
+from .serializers import UserSerializer, RelationSerializer, PostListSerializer, CommentSerializer, UsersAdminSerializer
 from rest_framework import generics
 from relation.models import Relation
 from content.models import Post
@@ -49,6 +49,16 @@ class FollowersListApiView(generics.ListAPIView):
         qs = super().get_queryset()
         return qs.filter(to_user=self.request.user)
     
+class FollowingsListApiView(generics.ListAPIView):
+    queryset = Relation.objects.select_related('from_user').all()
+    serializer_class = RelationSerializer
+    authentication_class = (JSONWebTokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(to_user=self.request.user)
+
 
 class PostListApiView(generics.ListAPIView):
     serializer_class = PostListSerializer
@@ -64,3 +74,9 @@ class CommentCreateApiView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class UsersListApiView(generics.ListAPIView):
+    authentication_class = (JSONWebTokenAuthentication,)
+    permission_classes = (IsAdminUser,)
+    queryset = User.objects.all()
+    serializer_class = UsersAdminSerializer
